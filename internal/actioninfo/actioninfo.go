@@ -17,10 +17,12 @@ func Info(dataset []string, dp DataParser) {
 		err := dp.Parse(v)
 		if err != nil {
 			fmt.Println(err)
+			continue
 		}
 		val, err := dp.ActionInfo()
 		if err != nil {
 			fmt.Println(err)
+			continue
 		}
 		fmt.Println(val)
 	}

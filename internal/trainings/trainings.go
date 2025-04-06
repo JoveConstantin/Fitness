@@ -23,7 +23,7 @@ type Training struct {
 func (t *Training) Parse(datastring string) (err error) {
 	s := strings.Split(datastring, ",")
 	if len(s) != 3 {
-		return errors.New("Передано не 3 параметра в Parse()")
+		return fmt.Errorf("invalid data format, expected 3 values ​​separated by commas, for example: '3456,Ходьба,3h00m', received '%s'", datastring)
 	}
 	steps, err := strconv.Atoi(s[0])
 	if err != nil {
@@ -31,10 +31,10 @@ func (t *Training) Parse(datastring string) (err error) {
 	}
 	t.Steps = steps
 	if t.Steps <= 0 {
-		return errors.New("Шагов должно быть больше 0")
+		return errors.New("steps must be > 0")
 	}
 	if s[1] != "Бег" && s[1] != "Ходьба" {
-		return errors.New("Вид тренировки не Бег или Ходьба")
+		return errors.New("trainingtype must be 'Бег' or 'Ходьба'")
 	}
 	t.TrainingType = s[1]
 
@@ -43,7 +43,7 @@ func (t *Training) Parse(datastring string) (err error) {
 		return fmt.Errorf("ParseDuration error: %w", err)
 	}
 	if trainingDuration <= 0 {
-		return errors.New("Длительность тренировки должна быть больше 0")
+		return errors.New("trainingduration must be > 0")
 	}
 	t.Duration = trainingDuration
 	return nil
@@ -53,11 +53,11 @@ func (t *Training) Parse(datastring string) (err error) {
 func (t Training) ActionInfo() (string, error) {
 	distance := spentenergy.Distance(t.Steps)
 	if distance <= 0 {
-		return "", errors.New("Дистанция должна быть больше 0")
+		return "", errors.New("distance must be > 0")
 	}
 
 	if t.Duration <= 0 {
-		return "", errors.New("Продолжительность должна быть больше 0")
+		return "", errors.New("duration must be > 0")
 	}
 
 	meanSpeed := spentenergy.MeanSpeed(t.Steps, t.Duration)
